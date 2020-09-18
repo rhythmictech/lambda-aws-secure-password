@@ -51,10 +51,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: build in docker
-        run: |
-          IMAGE=$(docker build . -t artifact)
-          CONTAINER=$(docker create ${IMAGE})
-          docker cp ${CONTAINER}:/var/task/lambda.zip .
+        run: docker build . -t artifact
+      - uses: shrink/actions-docker-extract@v1
+        with:
+          image: "artifact"
+          path: "/var/task/lambda.zip"
       - name: upload artifact
         uses: actions/upload-artifact@v2
         with:
