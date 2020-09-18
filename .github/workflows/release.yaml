@@ -53,7 +53,7 @@ jobs:
       - name: build in docker
         run: |
           docker build . -t artifact
-          docker cp /lambda.zip .
+          docker cp artifact:/lambda.zip .
       - name: upload artifact
         uses: actions/upload-artifact@v2
         with:
