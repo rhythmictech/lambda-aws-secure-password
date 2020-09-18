@@ -8,22 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-      - name: Install prerequisites
-        run: ./bin/install-ubuntu.sh
-      - name: initialize Terraform
-        run: terraform init --backend=false
+      - uses: actions/setup-python@v2
       - name: pre-commit
         uses: pre-commit/action@v2.0.0
         env:
-          AWS_DEFAULT_REGION: us-east-1
-          # many of these are covered by better reviewdog linters below
+          # skip eslint because reviewdog handles it
           SKIP: >-
-            terraform_tflint_deep,
-            no-commit-to-branch,
-            terraform_tflint_nocreds,
-            terraform_tfsec
+            eslint,
+            no-commit-to-branch
       - uses: stefanzweifel/git-auto-commit-action@v4
         if: ${{ failure() }}
         with:
@@ -33,41 +25,6 @@ jobs:
           commit_user_name: Linter Bot
           commit_user_email: noreply@rhythmictech.com
           commit_author: Linter Bot <actions@github.com>
-  tflint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 0.12.26
-      - name: Terraform init
-        run: terraform init --backend=false
-      - name: tflint
-        uses: reviewdog/action-tflint@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-check
-          filter_mode: added
-          flags: --module
-          level: error
-  tfsec:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 0.12.26
-      - name: Terraform init
-        run: terraform init --backend=false
-      - name: tfsec
-        uses: reviewdog/action-tfsec@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-check
-          filter_mode: added
-          level: warning
   misspell:
     runs-on: ubuntu-latest
     steps:
@@ -91,3 +48,30 @@ jobs:
           reporter: github-pr-check
           filter_mode: added
           level: error
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: eslint
+        uses: reviewdog/action-yamllint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-check
+          filter_mode: added
+          level: error
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build in docker
+        run: docker build . -t artifact
+      - uses: shrink/actions-docker-extract@v1
+        with:
+          image: "artifact"
+          path: "/var/task/lambda.zip"
+      - name: upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: lambda.zip
+          path: ${{ github.workspace }}/lambda.zip
+          if-no-files-found: error

@@ -1,44 +1,15 @@
 repos:
-  - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.31.0
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: ""
     hooks:
-      - id: terraform_docs
-        always_run: true
-        args:
-          - --args=--sort-by-required
-      - id: terraform_fmt
-      - id: terraform_tflint
-        alias: terraform_tflint_deep
-        name: terraform_tflint_deep
-        args:
-          - --args=--deep
-      - id: terraform_tflint
-        alias: terraform_tflint_nocreds
-        name: terraform_tflint_nocreds
-      - id: terraform_tfsec
-  - repo: local
-    hooks:
-      - id: terraform_validate
-        name: terraform_validate
-        entry: |
-          bash -c '
-            AWS_DEFAULT_REGION=us-east-1
-            declare -a DIRS
-            for FILE in "$@"
-            do
-              DIRS+=($(dirname "$FILE"))
-            done
-            for DIR in $(printf "%s\n" "${DIRS[@]}" | sort -u)
-            do
-              cd $(dirname "$FILE")
-              terraform init --backend=false
-              terraform validate .
-            done
-          '
-        language: system
-        verbose: true
-        files: \.tf(vars)?$
-        exclude: examples
+      - id: eslint
+        additional_dependencies:
+          - eslint@7.3.1
+          - eslint-config-standard@14.1.1
+          - eslint-plugin-import@2.21.2
+          - eslint-plugin-node@11.1.0
+          - eslint-plugin-promise@4.2.1
+          - eslint-plugin-standard@4.0.1
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.0.0
     hooks:

@@ -12,14 +12,15 @@
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "node-lambda": "^0.17.0"
+    "eslint-plugin-standard": "^4.0.1"
   },
   "license": "MIT",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rhythmictech/lambda-aws-secure-password"
+  },
   "scripts": {
-    "build": "node-lambda package -e production -x 'event.json build.env bin .github' -I lambci/lambda:build-nodejs12.x",
-    "run": "node-lambda run",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "version": "1.0.0"
