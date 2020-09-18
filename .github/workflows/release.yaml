@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: build in docker
-        run: >
+        run: |
           docker build . -t artifact
           docker cp /lambda.zip .
       - name: upload artifact
