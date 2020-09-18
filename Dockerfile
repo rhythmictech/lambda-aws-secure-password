@@ -1,4 +1,4 @@
-FROM lambci/lambda:build-nodejs12.x as build
+FROM lambci/lambda:build-nodejs12.x
 # COPY package-lock.json .
 # COPY package.json .
 # COPY LICENSE .
@@ -8,6 +8,4 @@ COPY . .
 RUN npm ci
 RUN zip -9yr lambda.zip .
 
-#############################################
-FROM scratch
-COPY --from=build /var/task/lambda.zip .
+ENTRYPOINT [ "/usr/bin/true" ]
