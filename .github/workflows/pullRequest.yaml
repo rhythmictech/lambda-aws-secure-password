@@ -59,3 +59,19 @@ jobs:
           reporter: github-pr-check
           filter_mode: added
           level: error
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build in docker
+        run: docker build . -t artifact
+      - uses: shrink/actions-docker-extract@v1
+        with:
+          image: "artifact"
+          path: "/var/task/lambda.zip"
+      - name: upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: lambda.zip
+          path: ${{ github.workspace }}/lambda.zip
+          if-no-files-found: error
