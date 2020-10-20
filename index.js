@@ -17,7 +17,7 @@ const generateChar = (include, min, charset) => {
 }
 
 const transformParams = params => ({
-  length: params.length,
+  length: parseInt(params.length),
   characters: [
     ...generateChar(params.lower, params.min_lower, password.lower),
     ...generateChar(params.upper, params.min_upper, password.upper),
