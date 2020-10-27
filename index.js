@@ -17,12 +17,12 @@ const generateChar = (include, min, charset) => {
 }
 
 const transformParams = params => ({
-  length: params.length,
+  length: parseInt(params.length),
   characters: [
-    ...generateChar(params.lower, params.min_lower, password.lower),
-    ...generateChar(params.upper, params.min_upper, password.upper),
-    ...generateChar(params.numbers, params.min_numeric, password.digits),
-    ...generateChar(params.special, params.min_special, params.override_special)
+    ...generateChar(params.lower, parseInt(params.min_lower), password.lower),
+    ...generateChar(params.upper, parseInt(params.min_upper), password.upper),
+    ...generateChar(params.numbers, parseInt(params.min_numeric), password.digits),
+    ...generateChar(params.special, parseInt(params.min_special), params.override_special)
   ]
 })
 
